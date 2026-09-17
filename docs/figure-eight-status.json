@@ -1,0 +1,12 @@
+{
+  "status": "IMPLEMENTED_PARTIAL",
+  "cloud_control": "ACTIVE",
+  "local_gpu_bridge": "IMPLEMENTED",
+  "durable_local_peer": "IMPLEMENTED",
+  "offline_ci": "IMPLEMENTED",
+  "bidirectional_reconciliation": "CONTRACT_DEFINED_NOT_LIVE",
+  "economic_truth": "CLOUD_AUTHORITY_ONLY",
+  "verified_external_revenue_nzd": 0,
+  "next_blocker": "live local sync adapter plus physical local-node startup",
+  "do_not_claim": ["full_offline_failover", "verified_revenue", "autonomous_external_sales"]
+}
