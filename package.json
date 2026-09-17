@@ -1,0 +1,12 @@
+{
+  "name": "llm-supabase-github-bridge",
+  "version": "0.1.0",
+  "description": "Minimal reference bridge: local-first evidence + Stripe + Supabase + GitHub Actions",
+  "private": true,
+  "scripts": {
+    "package-fossil": "node scripts/package-fossil.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
