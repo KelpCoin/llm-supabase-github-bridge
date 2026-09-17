@@ -116,9 +116,19 @@ def claim_one():
 
 
 def complete(note, result):
+    try:
+        source = json.loads(note.get("body") or "{}")
+    except json.JSONDecodeError:
+        source = {}
+    result["source_job_id"] = source.get("source_job_id") or source.get("job_id")
+    if source.get("cell_id"):
+        result["cell_id"] = source["cell_id"]
+    result["next_experiment"] = result.get("next_action")
     payload = json.dumps(
         {
             "schema_version": "BECK-LOCAL-GPU-RESULT-1.0",
+            "source_job_id": result.get("source_job_id"),
+            "cell_id": result.get("cell_id"),
             "note_id": note["note_id"],
             "worker_id": WORKER_ID,
             "result": result,
@@ -126,13 +136,14 @@ def complete(note, result):
         },
         ensure_ascii=True,
     )
+    correlation = note.get("correlation_id") or note["note_id"]
     return supabase_rpc(
         "complete_control_bridge_note",
         {
             "p_note_id": note["note_id"],
             "p_worker_id": WORKER_ID,
             "p_response_body": payload,
-            "p_response_subject": "LOCAL_GPU_WORKER_RESULT:" + note["note_id"],
+            "p_response_subject": "BRIDGE_STAGE:" + str(correlation) + ":WORKER_A_RESULT",
             "p_response_note_type": "FINDING",
             "p_from_agent": WORKER_ID,
         },
