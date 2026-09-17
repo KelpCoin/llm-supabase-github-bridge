@@ -1,0 +1,45 @@
+name: local-peer-offline-reconcile
+
+on:
+  push:
+    paths:
+      - 'workers/local-peer/**'
+      - '.github/workflows/local-peer-offline.yml'
+  pull_request:
+    paths:
+      - 'workers/local-peer/**'
+      - '.github/workflows/local-peer-offline.yml'
+
+jobs:
+  offline-reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Compile
+        run: python -m py_compile workers/local-peer/local_peer.py
+      - name: Seed and exercise offline peer
+        shell: bash
+        run: |
+          set -euo pipefail
+          export LOCAL_PEER_HOME="$RUNNER_TEMP/local-peer"
+          python - <<'PY'
+          import json, sys
+          sys.path.insert(0, 'workers/local-peer')
+          import local_peer
+          with local_peer.connect() as c:
+              t=local_peer.now()
+              c.execute("INSERT INTO capabilities VALUES (?,?,?,?,?,?,?,?,?)", ('test-cap',1,'AVAILABLE','artifact/test','abc123','{\"source\":\"ci\"}', 'gauntlet-test',0,t))
+          local_peer.enqueue('job-ci','test-cap',{'request':'offline test'})
+          assert local_peer.admit('job-ci')
+          assert local_peer.record_result('job-ci', {'decision':'COMPLETE','revenue_claimed':False})
+          with local_peer.connect() as c:
+              job=c.execute("SELECT state FROM jobs WHERE job_id='job-ci'").fetchone()[0]
+              receipt=c.execute("SELECT verification_state FROM evidence_receipts WHERE job_id='job-ci'").fetchone()[0]
+              assert job == 'TESTED'
+              assert receipt == 'UNVERIFIED'
+              assert not c.execute("SELECT 1 FROM jobs WHERE job_id='job-ci' AND state='VERIFIED'").fetchone()
+          print(json.dumps({'offline_path':'PASS','economic_truth':'UNVERIFIED','reconciliation_items':len(local_peer.pending_reconciliation())}))
+          PY
