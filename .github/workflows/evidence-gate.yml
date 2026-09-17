@@ -1,0 +1,57 @@
+name: Evidence Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check evidence contract present
+        run: |
+          test -f docs/evidence-contract.md
+          test -f supabase/migrations/20260917120000_evidence_core.sql
+          echo "Evidence contract and core schema present"
+
+      - name: Validate SQL syntax (basic)
+        run: |
+          # Simple structural check; full parse can be added later with pg_query or similar
+          grep -q "CREATE TABLE IF NOT EXISTS evidence_events" supabase/migrations/20260917120000_evidence_core.sql
+          grep -q "CREATE TABLE IF NOT EXISTS economic_events" supabase/migrations/20260917120000_evidence_core.sql
+          grep -q "CREATE TABLE IF NOT EXISTS fossils" supabase/migrations/20260917120000_evidence_core.sql
+          grep -q "CREATE TABLE IF NOT EXISTS oracle_verdicts" supabase/migrations/20260917120000_evidence_core.sql
+          echo "Core tables declared"
+
+      - name: Check no secrets in repo
+        run: |
+          if grep -rE "(sk_live_|sk_test_|whsec_|SUPABASE_SERVICE_ROLE)" --include="*.{ts,js,py,sql,md,yml,yaml}" . ; then
+            echo "Possible secret detected — fail"
+            exit 1
+          fi
+          echo "No obvious secrets found"
+
+      - name: Emit machine-readable proof
+        run: |
+          mkdir -p proof
+          cat > proof/EVIDENCE-GATE.json <<EOF
+          {
+            "run_id": "${{ github.run_id }}",
+            "sha": "${{ github.sha }}",
+            "verdict": "PASS",
+            "checks": ["contract_present", "schema_tables", "no_secrets"],
+            "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          cat proof/EVIDENCE-GATE.json
+
+      - name: Upload proof artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-gate-proof
+          path: proof/
