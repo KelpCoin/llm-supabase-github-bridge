@@ -1,0 +1,41 @@
+{
+  "schema_version": "BEC-CLOUD-INVENTORY-1",
+  "generated": "2026-09-18",
+  "control_plane": {
+    "supabase_project": "wbwgroygjeyukkspnqiy",
+    "github_bridge": "KelpCoin/llm-supabase-github-bridge",
+    "economic_truth_authority": "existing economic evidence chain",
+    "orchestration_authority": "existing Supabase orchestrator/work ledger"
+  },
+  "confirmed_components": [
+    "orchestrator work ledger",
+    "leased bridge notes",
+    "bridge lease reclaim/watchdogs",
+    "economic task bridge dispatcher",
+    "CUBE autonomous refinery",
+    "bounded recursive job chaining",
+    "result reconciliation",
+    "Truth Oracle catalog tick",
+    "economic Gauntlet receipts",
+    "RAG evidence layer",
+    "factory feedback loop",
+    "local GPU worker claim contract",
+    "CUBE research routing to local GPU worker",
+    "Stripe settlement queue/evidence",
+    "marketplace fulfillment machinery",
+    "economic outcome recorder",
+    "agent memory layer"
+  ],
+  "local_dependency": [
+    "LM Studio/llmster",
+    "local GPU worker process",
+    "SUPABASE_URL",
+    "server-side Supabase secret"
+  ],
+  "not_confirmed": [
+    "RIG implementation",
+    "verified external revenue",
+    "autonomous external outreach without human authority gate"
+  ],
+  "principle": "Add only a missing primitive that is proven necessary. Do not create a parallel orchestrator, ledger, evidence system, or scheduler."
+}
