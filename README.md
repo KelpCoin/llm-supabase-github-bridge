@@ -21,6 +21,14 @@ Minimal reference implementation for a **local-first, offline-capable, air-gap f
 5. Push to GitHub → Actions run migrations, verification, and evidence gates.
 6. For pure local/air-gap: run the same SQL against local Postgres and use the offline scripts in `scripts/`.
 
+## Local GPU worker
+
+`workers/local-gpu-worker/` is the semantic worker for the existing BrownEye bridge. It uses LM Studio's OpenAI-compatible local API and the existing Supabase `control_bridge_notes` lease/response contract. It does not create a second orchestrator, does not send external communications, and does not claim revenue or fulfillment.
+
+Set `SUPABASE_URL`, `SUPABASE_SECRET_KEY` (preferred) or `SUPABASE_SERVICE_ROLE_KEY`, and optionally `LM_STUDIO_MODEL`. Keep the Supabase secret out of source control. Start LM Studio with the desired model loaded, then run `workers/local-gpu-worker/run.ps1` on the GPU machine.
+
+The cloud control plane already schedules the local-GPU dispatcher. When the worker is offline, queued work remains in the bridge rather than being fabricated or marked complete.
+
 ## Structure
 
 ```
@@ -33,6 +41,8 @@ docs/
   local-first.md       # Offline / air-gap mode
 .github/workflows/     # Cloud control plane
 scripts/               # Local + hybrid runners
+workers/
+  local-gpu-worker/    # LM Studio semantic worker
 ```
 
 ## Current Focus
@@ -42,6 +52,7 @@ scripts/               # Local + hybrid runners
 - GitHub Actions as the always-on verifier
 - MCP surface for LLM agents
 - Local-first packaging so IP stays under your control
+- Local LM Studio semantic execution through the existing bridge
 
 See `docs/evidence-contract.md` and the migration files for the living schema.
 
