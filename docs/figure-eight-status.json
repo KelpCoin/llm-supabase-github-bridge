@@ -19,14 +19,23 @@
   "settle_lobe": {
     "stripe": "DreamLedger commercial + this bridge evidence schemas",
     "priority_offers_nzd": [50, 29, 79],
+    "payment_links": {
+      "tile_50": "https://buy.stripe.com/9B66oH2rj3dz82jcR6dwc2x",
+      "diagnostic_29": "https://buy.stripe.com/00w7sLaXP01n96nbN2dwc2l"
+    },
+    "first_sale_checklist": "KelpCoin/DreamLedger ops/economic/FIRST-SALE-EXECUTION-CHECKLIST-2026-09-20.md",
+    "settlement_spine": "KelpCoin/DreamLedger ops/commerce/README.md",
+    "offer_seed_migration": "supabase/migrations/20260920140000_seed_priority_offers.sql",
     "ignition": "one external payment_intent.succeeded + full evidence chain"
   },
-  "next_blocker": "live local sync adapter plus physical local-node startup; first verified external settlement",
+  "agent_protocol": "docs/agent-ping-protocol.md",
+  "fossil_stub": "scripts/package_fossil_stub.py",
+  "next_blocker": "owned-channel distribution + live settlement recognition of first stranger payment; local sync adapter still pending",
   "do_not_claim": [
     "full_offline_failover",
     "verified_revenue",
     "autonomous_external_sales",
     "game_activity_as_business_revenue"
   ],
-  "agent_instruction": "Any LLM touching this repo or DreamLedger must read AGENT_BUS/PING_PONG_BALLS.json and leave a handoff after state changes."
+  "agent_instruction": "Any LLM touching this repo or DreamLedger must read AGENT_BUS/PING_PONG_BALLS.json and docs/agent-ping-protocol.md; leave a handoff after state changes."
 }
