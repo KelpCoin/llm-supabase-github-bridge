@@ -1,5 +1,6 @@
 {
   "status": "IMPLEMENTED_PARTIAL",
+  "updated": "2026-09-20",
   "cloud_control": "ACTIVE",
   "local_gpu_bridge": "IMPLEMENTED",
   "durable_local_peer": "IMPLEMENTED",
@@ -7,6 +8,25 @@
   "bidirectional_reconciliation": "CONTRACT_DEFINED_NOT_LIVE",
   "economic_truth": "CLOUD_AUTHORITY_ONLY",
   "verified_external_revenue_nzd": 0,
-  "next_blocker": "live local sync adapter plus physical local-node startup",
-  "do_not_claim": ["full_offline_failover", "verified_revenue", "autonomous_external_sales"]
+  "play_lobe": {
+    "canonical_repo": "KelpCoin/DreamLedger",
+    "bus": "AGENT_BUS/",
+    "browser_mvp": "phinhaven/shallows/index.html",
+    "godot_scaffold": "phinhaven/godot/shallows/",
+    "handoff": "AGENT_BUS/HANDOFF-2026-09-20-FIGURE-EIGHT-ESTUARY.md",
+    "balls": "AGENT_BUS/PING_PONG_BALLS.json"
+  },
+  "settle_lobe": {
+    "stripe": "DreamLedger commercial + this bridge evidence schemas",
+    "priority_offers_nzd": [50, 29, 79],
+    "ignition": "one external payment_intent.succeeded + full evidence chain"
+  },
+  "next_blocker": "live local sync adapter plus physical local-node startup; first verified external settlement",
+  "do_not_claim": [
+    "full_offline_failover",
+    "verified_revenue",
+    "autonomous_external_sales",
+    "game_activity_as_business_revenue"
+  ],
+  "agent_instruction": "Any LLM touching this repo or DreamLedger must read AGENT_BUS/PING_PONG_BALLS.json and leave a handoff after state changes."
 }
