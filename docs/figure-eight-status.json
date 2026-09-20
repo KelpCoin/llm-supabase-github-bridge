@@ -8,34 +8,29 @@
   "bidirectional_reconciliation": "CONTRACT_DEFINED_NOT_LIVE",
   "economic_truth": "CLOUD_AUTHORITY_ONLY",
   "verified_external_revenue_nzd": 0,
-  "play_lobe": {
-    "canonical_repo": "KelpCoin/DreamLedger",
-    "bus": "AGENT_BUS/",
-    "browser_mvp": "phinhaven/shallows/index.html",
-    "godot_scaffold": "phinhaven/godot/shallows/",
-    "handoff": "AGENT_BUS/HANDOFF-2026-09-20-FIGURE-EIGHT-ESTUARY.md",
-    "balls": "AGENT_BUS/PING_PONG_BALLS.json"
-  },
   "settle_lobe": {
-    "stripe": "DreamLedger commercial + this bridge evidence schemas",
-    "priority_offers_nzd": [50, 29, 79],
-    "payment_links": {
-      "tile_50": "https://buy.stripe.com/9B66oH2rj3dz82jcR6dwc2x",
-      "diagnostic_29": "https://buy.stripe.com/00w7sLaXP01n96nbN2dwc2l"
-    },
+    "priority_offers_nzd": [
+      29,
+      50,
+      79
+    ],
+    "cmd_diag_29_payment_link": "https://buy.stripe.com/8x228r1nfg0l3M32csdwc2I",
+    "tile_50_payment_link": "https://buy.stripe.com/9B66oH2rj3dz82jcR6dwc2x",
     "first_sale_checklist": "KelpCoin/DreamLedger ops/economic/FIRST-SALE-EXECUTION-CHECKLIST-2026-09-20.md",
-    "settlement_spine": "KelpCoin/DreamLedger ops/commerce/README.md",
-    "offer_seed_migration": "supabase/migrations/20260920140000_seed_priority_offers.sql",
-    "ignition": "one external payment_intent.succeeded + full evidence chain"
+    "ignition": "one external payment_intent.succeeded + attribution + fulfillment + proof"
   },
-  "agent_protocol": "docs/agent-ping-protocol.md",
-  "fossil_stub": "scripts/package_fossil_stub.py",
-  "next_blocker": "owned-channel distribution + live settlement recognition of first stranger payment; local sync adapter still pending",
+  "control_findings": [
+    "Supabase commerce-supervisor v1 is ACTIVE but currently monitors commerce_cells, which contains billboard and Maximona entries, not CMD-DIAG-29.",
+    "revenue_catalog contains two active Commander Diagnostic entries: CMD-DIAG-29 at NZ$29 and legacy COMMANDER-DECK-DIAGNOSTIC-001 at NZ$15.",
+    "marketplace_fulfillments currently has zero rows and revenue_orders for COMMANDER-DECK-DIAGNOSTIC-001 has zero rows.",
+    "The canonical CMD-DIAG settlement path remains frozen pending real transaction evidence."
+  ],
+  "next_blocker": "external buyer acquisition plus customer-path observation; secondary control-plane cleanup is the duplicate catalog entry and supervisor coverage gap",
   "do_not_claim": [
-    "full_offline_failover",
     "verified_revenue",
     "autonomous_external_sales",
+    "full_offline_failover",
     "game_activity_as_business_revenue"
   ],
-  "agent_instruction": "Any LLM touching this repo or DreamLedger must read AGENT_BUS/PING_PONG_BALLS.json and docs/agent-ping-protocol.md; leave a handoff after state changes."
+  "agent_instruction": "Read DreamLedger AGENT_BUS/PING_PONG_BALLS.json and leave a handoff after material state changes. Do not create parallel economic truth."
 }
