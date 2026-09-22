@@ -13,6 +13,7 @@ POLL_SECONDS = int(os.getenv("POLL_SECONDS", "5"))
 LEASE_SECONDS = int(os.getenv("LEASE_SECONDS", "300"))
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "4096"))
 TEMPERATURE = float(os.getenv("TEMPERATURE", "0.1"))
+HEARTBEAT_SECONDS = int(os.getenv("HEARTBEAT_SECONDS", "30"))
 
 if not SUPABASE_KEY:
     raise RuntimeError("SUPABASE_SECRET_KEY or SUPABASE_SERVICE_ROLE_KEY is required")
@@ -37,6 +38,13 @@ def supabase_rpc(name, args):
         body=args,
         headers={"apikey": SUPABASE_KEY, "Authorization": f"Bearer {SUPABASE_KEY}"},
         timeout=60,
+    )
+
+
+def heartbeat(state="RUNNING"):
+    return supabase_rpc(
+        "beck_heartbeat",
+        {"p_worker_id": WORKER_ID, "p_objective_id": None, "p_state": state},
     )
 
 
@@ -153,8 +161,13 @@ def complete(note, result):
 def main():
     model = choose_model()
     print(json.dumps({"status": "READY", "worker": WORKER_ID, "model": model}, ensure_ascii=True), flush=True)
+    last_heartbeat = 0.0
     while True:
         try:
+            now = time.time()
+            if now - last_heartbeat >= HEARTBEAT_SECONDS:
+                heartbeat("RUNNING")
+                last_heartbeat = now
             note = claim_one()
             if not note:
                 time.sleep(POLL_SECONDS)
@@ -162,6 +175,8 @@ def main():
             try:
                 result = run_model(note, model)
                 complete(note, result)
+                heartbeat("RUNNING")
+                last_heartbeat = time.time()
                 print(json.dumps({"status": "COMPLETED", "note_id": note["note_id"]}, ensure_ascii=True), flush=True)
             except Exception as exc:
                 print(json.dumps({"status": "WORK_FAILED", "note_id": note.get("note_id"), "error": str(exc)}, ensure_ascii=True), flush=True)
