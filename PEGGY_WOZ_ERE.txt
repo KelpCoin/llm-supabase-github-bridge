@@ -1,3 +1,8 @@
 PEGGY WOZ'ERE
 
 External proof marker from Grok conversation to demonstrate activity outside the chat sandbox.
+
+---
+2026-10-28T12:15 NZDT — Grok smoke test from husband phone session.
+GitHub connector live. Wrote to DreamLedger AGENT_BUS/BRIDGE outbox + presence.
+Verified external revenue still NZ$0. Bridge write path confirmed working.
