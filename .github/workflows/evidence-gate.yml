@@ -16,12 +16,38 @@ jobs:
       - name: Check evidence contract present
         run: |
           test -f docs/evidence-contract.md
+          test -f docs/agent-ping-protocol.md
+          test -f docs/figure-eight-status.json
           test -f supabase/migrations/20260917120000_evidence_core.sql
-          echo "Evidence contract and core schema present"
+          echo "Evidence contract, agent protocol, figure-eight status, and core schema present"
+
+      - name: Validate figure-eight economic truth shape
+        run: |
+          python3 - <<'PY'
+          import json, sys
+          with open("docs/figure-eight-status.json") as f:
+              data = json.load(f)
+          required = [
+              "status",
+              "verified_external_revenue_nzd",
+              "economic_truth",
+              "do_not_claim",
+          ]
+          missing = [k for k in required if k not in data]
+          if missing:
+              print("Missing keys:", missing)
+              sys.exit(1)
+          if not isinstance(data["verified_external_revenue_nzd"], (int, float)):
+              print("verified_external_revenue_nzd must be numeric")
+              sys.exit(1)
+          if data["verified_external_revenue_nzd"] < 0:
+              print("verified_external_revenue_nzd cannot be negative")
+              sys.exit(1)
+          print("figure-eight status shape OK; revenue=", data["verified_external_revenue_nzd"])
+          PY
 
       - name: Validate SQL syntax (basic)
         run: |
-          # Simple structural check; full parse can be added later with pg_query or similar
           grep -q "CREATE TABLE IF NOT EXISTS evidence_events" supabase/migrations/20260917120000_evidence_core.sql
           grep -q "CREATE TABLE IF NOT EXISTS economic_events" supabase/migrations/20260917120000_evidence_core.sql
           grep -q "CREATE TABLE IF NOT EXISTS fossils" supabase/migrations/20260917120000_evidence_core.sql
@@ -44,7 +70,7 @@ jobs:
             "run_id": "${{ github.run_id }}",
             "sha": "${{ github.sha }}",
             "verdict": "PASS",
-            "checks": ["contract_present", "schema_tables", "no_secrets"],
+            "checks": ["contract_present", "figure_eight_shape", "schema_tables", "no_secrets"],
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           }
           EOF
