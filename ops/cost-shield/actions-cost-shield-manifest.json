@@ -1,0 +1,19 @@
+{
+  "schema": "beck/actions-cost-shield/v1",
+  "repo": "KelpCoin/llm-supabase-github-bridge",
+  "alert": "2001 of 2000 included minutes, reset December 1 2026",
+  "before": "3af2ff86d6588ea16e73d0e5324d6ff69e9e5828",
+  "paused_at": "2026-11-08 NZDT",
+  "budget_cap_verified": false,
+  "files": [
+    {
+      "path": ".github/workflows/evidence-gate.yml",
+      "sha": "acbcdb1819a95f5e2ba53508e52f02ee919dadf0"
+    },
+    {
+      "path": ".github/workflows/local-peer-offline.yml",
+      "sha": "22414d711c116b244d2ecc2f29109c442d5fb4e4"
+    }
+  ],
+  "release_authorized": false
+}
