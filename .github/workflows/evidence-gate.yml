@@ -21,29 +21,23 @@ jobs:
           test -f supabase/migrations/20260917120000_evidence_core.sql
           echo "Evidence contract, agent protocol, figure-eight status, and core schema present"
 
-      - name: Validate figure-eight economic truth shape
+      - name: Validate public archive contains no live economic state
         run: |
           python3 - <<'PY'
-          import json, sys
-          with open("docs/figure-eight-status.json") as f:
-              data = json.load(f)
-          required = [
-              "status",
-              "verified_external_revenue_nzd",
-              "economic_truth",
-              "do_not_claim",
-          ]
-          missing = [k for k in required if k not in data]
-          if missing:
-              print("Missing keys:", missing)
-              sys.exit(1)
-          if not isinstance(data["verified_external_revenue_nzd"], (int, float)):
-              print("verified_external_revenue_nzd must be numeric")
-              sys.exit(1)
-          if data["verified_external_revenue_nzd"] < 0:
-              print("verified_external_revenue_nzd cannot be negative")
-              sys.exit(1)
-          print("figure-eight status shape OK; revenue=", data["verified_external_revenue_nzd"])
+          import json
+          from pathlib import Path
+          docs=["docs/cloud-inventory.json","docs/figure-eight-status.json"]
+          for p in docs:
+              data=json.loads(Path(p).read_text())
+              assert data["schema"]=="public-reference-retirement/v1",p
+              assert data["status"]=="RETIRED",p
+              for forbidden in ("supabase_project","orchestration_authority","verified_external_revenue_nzd","cmd_diag_29_payment_link","control_plane"):
+                  assert forbidden not in data,p
+          for p in ("README.md","docs/autonomous-cloud-map.md","docs/agent-ping-protocol.md","docs/local-first.md"):
+              body=Path(p).read_text()
+              for forbidden in ("control_bridge_notes","claim_local_gpu_bridge_note","KelpCoin/DreamLedger AGENT_BUS","BECK-Collab-Inbox","Supabase Cron runs","BECK_PRIVATE_LLM"):
+                  assert forbidden not in body,p
+          print("PUBLIC_REFERENCE_PRIVACY=PASS; ECONOMIC_TRUTH=NOT_ESTABLISHED")
           PY
 
       - name: Validate SQL syntax (basic)
@@ -69,8 +63,8 @@ jobs:
           {
             "run_id": "${{ github.run_id }}",
             "sha": "${{ github.sha }}",
-            "verdict": "PASS",
-            "checks": ["contract_present", "figure_eight_shape", "schema_tables", "no_secrets"],
+            "verdict": "PASS_ARCHIVED_REFERENCE_ONLY",
+            "checks": ["contract_present", "retired_archive_privacy", "schema_tables", "no_secrets"],
             "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           }
           EOF
